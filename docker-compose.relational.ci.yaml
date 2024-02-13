@@ -1,12 +1,13 @@
 services:
-  postgres:
-    image: postgres:16.1-alpine
-    expose:
-      - 5432
+  mysql:
+    image: mysql
+    ports:
+      - 3306
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
 
   maildev:
     build:
