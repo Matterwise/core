@@ -132,6 +132,12 @@ export class AuthService {
         provider: authProvider,
       });
     }
+    if (socialData.username) {
+      user = await this.usersService.findOne({
+        username: socialData.username,
+        provider: authProvider,
+      });
+    }
 
     if (user) {
       if (socialEmail && !userByEmail) {
@@ -150,6 +156,7 @@ export class AuthService {
 
       user = await this.usersService.create({
         email: socialEmail ?? null,
+        username: socialData.username ?? null,
         firstName: socialData.firstName ?? null,
         lastName: socialData.lastName ?? null,
         socialId: socialData.id,
@@ -201,6 +208,7 @@ export class AuthService {
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
+      username: dto.username,
       role: {
         id: RoleEnum.user,
       },

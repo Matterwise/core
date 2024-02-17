@@ -33,6 +33,10 @@ export class UserEntity extends EntityRelationalHelper implements User {
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
 
+  @Column({ type: String, unique: true })
+  @Expose({ groups: ['me', 'admin'] })
+  username: string | null;
+
   @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   password?: string;
@@ -44,6 +48,15 @@ export class UserEntity extends EntityRelationalHelper implements User {
   public loadPreviousPassword(): void {
     this.previousPassword = this.password;
   }
+
+  @Column({ type: String, nullable: true })
+  bio?: string | null;
+
+  @Column({ type: String, nullable: true })
+  statusMessage?: string | null;
+
+  @Column({ type: String, nullable: true })
+  avatarUrl?: string | null;
 
   @Column({ default: AuthProvidersEnum.email })
   @Expose({ groups: ['me', 'admin'] })

@@ -9,6 +9,11 @@ export class AuthRegisterLoginDto {
   @IsEmail()
   email: string;
 
+  @ApiProperty({ example: 'testuser' })
+  @Transform(lowerCaseTransformer)
+  @IsNotEmpty()
+  username: string;
+
   @ApiProperty()
   @MinLength(6)
   password: string;

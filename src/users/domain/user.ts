@@ -9,6 +9,9 @@ export class User {
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
 
+  @Expose({ groups: ['me', 'admin'] })
+  username: string | null;
+
   @Exclude({ toPlainOnly: true })
   password?: string;
 

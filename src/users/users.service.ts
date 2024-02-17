@@ -48,6 +48,23 @@ export class UsersService {
       }
     }
 
+    if (clonedPayload.username) {
+      const userObject = await this.usersRepository.findOne({
+        username: clonedPayload.username,
+      });
+      if (userObject) {
+        throw new HttpException(
+          {
+            status: HttpStatus.UNPROCESSABLE_ENTITY,
+            errors: {
+              username: 'usernameAlreadyExists',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
     if (clonedPayload.photo?.id) {
       const fileObject = await this.filesService.findOne({
         id: clonedPayload.photo.id,

@@ -13,6 +13,11 @@ export class CreateUserDto {
   @IsEmail()
   email: string | null;
 
+  @ApiProperty({ example: 'testuser' })
+  @Transform(lowerCaseTransformer)
+  @IsNotEmpty()
+  username: string | null;
+
   @ApiProperty()
   @MinLength(6)
   password?: string;
@@ -28,6 +33,18 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Doe' })
   @IsNotEmpty()
   lastName: string | null;
+
+  @ApiProperty({ example: 'this is a bio' })
+  @IsOptional()
+  bio?: string | null;
+
+  @ApiProperty({ example: 'this is a status message' })
+  @IsOptional()
+  statusMessage?: string | null;
+
+  @ApiProperty({ example: 'https://example.com/avatar.jpg' })
+  @IsOptional()
+  avatarUrl?: string | null;
 
   @ApiProperty({ type: () => FileDto })
   @IsOptional()
