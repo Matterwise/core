@@ -7,7 +7,6 @@ import {
   MAIL_HOST,
   MAIL_PORT,
 } from '../utils/constants';
-import exp from 'node:constants';
 
 describe('Auth Module', () => {
   const app = APP_URL;
