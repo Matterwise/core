@@ -1,4 +1,9 @@
-import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from '../utils/constants';
+import {
+  APP_URL,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  ADMIN_USERNAME,
+} from '../utils/constants';
 import request from 'supertest';
 import { RoleEnum } from '../../src/roles/roles.enum';
 import { StatusEnum } from '../../src/statuses/statuses.enum';
@@ -10,7 +15,11 @@ describe('Users Module', () => {
   beforeAll(async () => {
     await request(app)
       .post('/api/v1/auth/email/login')
-      .send({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD })
+      .send({
+        email: ADMIN_EMAIL,
+        username: ADMIN_USERNAME,
+        password: ADMIN_PASSWORD,
+      })
       .then(({ body }) => {
         apiToken = body.token;
       });
@@ -21,6 +30,7 @@ describe('Users Module', () => {
     const newUserEmail = `user-first.${Date.now()}@example.com`;
     const newUserPassword = `secret`;
     const newUserChangedPassword = `new-secret`;
+    const newUsername = `user-first.${Date.now()}`;
 
     beforeAll(async () => {
       await request(app)
@@ -28,13 +38,18 @@ describe('Users Module', () => {
         .send({
           email: newUserEmail,
           password: newUserPassword,
+          username: newUsername,
           firstName: `First${Date.now()}`,
           lastName: 'E2E',
         });
 
       await request(app)
         .post('/api/v1/auth/email/login')
-        .send({ email: newUserEmail, password: newUserPassword })
+        .send({
+          email: newUserEmail,
+          username: newUsername,
+          password: newUserPassword,
+        })
         .then(({ body }) => {
           newUser = body.user;
         });
@@ -58,6 +73,7 @@ describe('Users Module', () => {
             .send({
               email: newUserEmail,
               password: newUserChangedPassword,
+              username: newUsername,
             })
             .expect(200)
             .expect(({ body }) => {
@@ -71,6 +87,7 @@ describe('Users Module', () => {
   describe('Create', () => {
     const newUserByAdminEmail = `user-created-by-admin.${Date.now()}@example.com`;
     const newUserByAdminPassword = `secret`;
+    const newUsernameByAdmin = `user-created-by-admin.${Date.now()}`;
 
     describe('User with "Admin" role', () => {
       it('should fail to create new user with invalid email: /api/v1/users (POST)', () => {
@@ -92,6 +109,7 @@ describe('Users Module', () => {
           .send({
             email: newUserByAdminEmail,
             password: newUserByAdminPassword,
+            username: newUsernameByAdmin,
             firstName: `UserByAdmin${Date.now()}`,
             lastName: 'E2E',
             role: {
@@ -110,6 +128,7 @@ describe('Users Module', () => {
             .post('/api/v1/auth/email/login')
             .send({
               email: newUserByAdminEmail,
+              username: newUsernameByAdmin,
               password: newUserByAdminPassword,
             })
             .expect(200)
@@ -134,6 +153,7 @@ describe('Users Module', () => {
           .expect(({ body }) => {
             expect(body.data[0].provider).toBeDefined();
             expect(body.data[0].email).toBeDefined();
+            expect(body.data[0].username).toBeDefined();
             expect(body.data[0].hash).not.toBeDefined();
             expect(body.data[0].password).not.toBeDefined();
             expect(body.data[0].previousPassword).not.toBeDefined();
