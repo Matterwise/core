@@ -7,19 +7,11 @@ import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
 import { AllConfigType } from 'src/config/config.type';
 import { FilesS3PresignedService } from './files.service';
-import databaseConfig from 'src/database/config/database.config';
-import { DatabaseConfig } from 'src/database/config/database-config.type';
-import { DocumentFilePersistenceModule } from '../../persistence/document/document-persistence.module';
 import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
-
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
-  ? DocumentFilePersistenceModule
-  : RelationalFilePersistenceModule;
 
 @Module({
   imports: [
-    infrastructurePersistenceModule,
+    RelationalFilePersistenceModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
