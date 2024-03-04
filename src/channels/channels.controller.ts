@@ -48,6 +48,17 @@ export class ChannelsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @Get(':id/users')
+  @ApiParam({
+    name: 'id',
+  })
+  @HttpCode(HttpStatus.OK)
+  getChannelUsers(@Request() request, @Param('id') id: Channel['id']) {
+    return this.channelsService.getChannelUsers(request.user, id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiParam({
     name: 'id',

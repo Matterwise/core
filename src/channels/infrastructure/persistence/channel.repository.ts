@@ -14,5 +14,7 @@ export abstract class ChannelRepository {
     fields: EntityCondition<Channel>,
   ): Promise<NullableType<Channel>>;
 
+  abstract getChannelUsers(id: Channel['id']): Promise<Channel['members']>;
+
   abstract softDelete(id: Channel['id']): Promise<void>;
 }

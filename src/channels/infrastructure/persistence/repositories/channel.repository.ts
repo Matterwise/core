@@ -31,6 +31,14 @@ export class ChannelRelationalRepository {
     return entity ? ChannelMapper.toDomain(entity) : null;
   }
 
+  async getChannelUsers(id: Channel['id']): Promise<Channel['members']> {
+    const entity = await this.channelRepository.findOne({
+      where: { id },
+      relations: ['members'],
+    });
+    return entity ? entity.members : [];
+  }
+
   async softDelete(id: Channel['id']): Promise<void> {
     await this.channelRepository.softDelete(id);
   }
