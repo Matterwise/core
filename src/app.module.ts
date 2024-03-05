@@ -33,6 +33,7 @@ import { DatabaseConfig } from './database/config/database-config.type';
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { MessagesModule } from './messages/messages.module';
 import { ChannelsModule } from './channels/channels.module';
+import { InvitesModule } from './invites/invites.module';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { ChannelsModule } from './channels/channels.module';
     WorkspacesModule,
     MessagesModule,
     ChannelsModule,
+    InvitesModule,
   ],
   providers: [],
 })

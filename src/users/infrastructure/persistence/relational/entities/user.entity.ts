@@ -9,6 +9,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -23,6 +24,7 @@ import { WorkspaceEntity } from 'src/workspaces/infrastructure/persistence/entit
 import { User } from '../../../../domain/user';
 import { ChannelEntity } from '../../../../../channels/infrastructure/persistence/entities/channel.entity';
 import { IsDefined } from 'class-validator';
+import { InviteEntity } from 'src/invites/infrastructure/entities/invite.entity';
 
 @Entity({
   name: 'user',
@@ -100,6 +102,9 @@ export class UserEntity extends EntityRelationalHelper implements User {
     eager: true,
   })
   status?: StatusEntity;
+
+  @OneToMany(() => InviteEntity, (invite) => invite.invitee)
+  invitesReceived: InviteEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

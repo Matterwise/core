@@ -9,7 +9,13 @@ export abstract class UserRepository {
   abstract create(
     data: Omit<
       User,
-      'id' | 'createdAt' | 'deletedAt' | 'updatedAt' | 'channels' | 'workspaces'
+      | 'id'
+      | 'createdAt'
+      | 'deletedAt'
+      | 'updatedAt'
+      | 'channels'
+      | 'workspaces'
+      | 'invitesReceived'
     >,
   ): Promise<User>;
 
