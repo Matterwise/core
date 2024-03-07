@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/domain/user';
-import { InviteRepository } from './infrastructure/invite.repository';
 import { Invite } from './domain/invite';
 import { CreateInviteDto } from './dto/create-invite.dto';
+import { InviteRepository } from './infrastructure/presistence/invite.repository';
 
 /*
     - get invites for workspace

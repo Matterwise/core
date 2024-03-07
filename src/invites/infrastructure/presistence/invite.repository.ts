@@ -1,4 +1,4 @@
-import { Invite } from '../domain/invite';
+import { Invite } from '../../domain/invite';
 
 export abstract class InviteRepository {
   abstract create(

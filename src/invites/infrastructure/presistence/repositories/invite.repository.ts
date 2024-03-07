@@ -3,10 +3,15 @@ import { InviteEntity } from '../entities/invite.entity';
 import { Repository } from 'typeorm';
 import { Invite } from 'src/invites/domain/invite';
 import { InviteMapper } from '../mappers/invite.mapper';
+import { InviteRepository } from '../invite.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class InviteRepository {
-  constructor(private readonly inviteRepository: Repository<InviteEntity>) {}
+export class InviteRelationalRepository implements InviteRepository {
+  constructor(
+    @InjectRepository(InviteEntity)
+    private readonly inviteRepository: Repository<InviteEntity>,
+  ) {}
 
   async create(data: Invite): Promise<Invite> {
     const presistenceModel = InviteMapper.toPersistence(data);

@@ -24,7 +24,7 @@ import { WorkspaceEntity } from 'src/workspaces/infrastructure/persistence/entit
 import { User } from '../../../../domain/user';
 import { ChannelEntity } from '../../../../../channels/infrastructure/persistence/entities/channel.entity';
 import { IsDefined } from 'class-validator';
-import { InviteEntity } from 'src/invites/infrastructure/entities/invite.entity';
+import { InviteEntity } from '../../../../../invites/infrastructure/presistence/entities/invite.entity';
 
 @Entity({
   name: 'user',
