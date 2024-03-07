@@ -1,31 +1,79 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/users/domain/user';
+import { InviteRepository } from './infrastructure/invite.repository';
+import { Invite } from './domain/invite';
+import { CreateInviteDto } from './dto/create-invite.dto';
 
 /*
     - get invites for workspace
     - get invites for users  
-
 */
 @Injectable()
 export class InvitesService {
-  constructor() {}
+  constructor(private readonly inviteRepository: InviteRepository) {}
 
-  createInvite() {
-    return 'This action adds a new invite';
+  createInvite(user: User, data: CreateInviteDto) {
+    const isSenderWorkspaceOwner = data.workspace.owner.id === user.id;
+    if (!isSenderWorkspaceOwner) {
+      throw new Error('Only workspace owner can send invites');
+    }
+
+    const clonedPayload = {
+      sender: user,
+      ...data,
+    };
+
+    return this.inviteRepository.create(clonedPayload);
   }
 
-  getInvite() {
-    return 'This action returns a invite';
+  async getInvite(user: User, id: Invite['id']) {
+    const invite = await this.inviteRepository.getInvite(id);
+    if (invite.sender.id !== user.id && invite.invitee.id !== user.id) {
+      throw new Error('User is not the sender or the invitee');
+    }
+    return this.inviteRepository.getInvite(id);
   }
 
-  acceptInvite() {
-    return 'This action accepts a invite';
+  async acceptInvite(user: User, id: Invite['id']) {
+    const invite = await this.inviteRepository.getInvite(id);
+    if (invite.invitee.id !== user.id) {
+      throw new Error('User is not the invitee');
+    }
+
+    if (invite.status !== 'pending') {
+      throw new Error('Invite is not valid');
+    }
+
+    if (invite.expiresAt < new Date()) {
+      await this.inviteRepository.expireInvite(id);
+      throw new Error('Invite expired');
+    }
+
+    return this.inviteRepository.acceptInvite(id);
   }
 
-  declineInvite() {
-    return 'This action declines a invite';
+  async declineInvite(user: User, id: Invite['id']) {
+    const invite = await this.inviteRepository.getInvite(id);
+    if (invite.invitee.id !== user.id) {
+      throw new Error('User is not the invitee');
+    }
+
+    if (invite.status !== 'pending') {
+      throw new Error('Invite is not valid');
+    }
+
+    if (invite.expiresAt < new Date()) {
+      await this.inviteRepository.expireInvite(id);
+      throw new Error('Invite expired');
+    }
+    return this.inviteRepository.declineInvite(id);
   }
 
-  cancelInvite() {
-    return 'This action cancels a invite';
+  async cancelInvite(user: User, id: Invite['id']) {
+    const invite = await this.inviteRepository.getInvite(id);
+    if (invite.sender.id !== user.id) {
+      throw new Error('User is not the sender');
+    }
+    return this.inviteRepository.cancelInvite(id);
   }
 }

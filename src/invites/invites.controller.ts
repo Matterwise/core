@@ -1,7 +1,17 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Request,
+  Param,
+} from '@nestjs/common';
 import { InvitesService } from './invites.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateInviteDto } from './dto/create-invite.dto';
+import { Invite } from './domain/invite';
 
 @Controller('invites')
 export class InvitesController {
@@ -10,35 +20,38 @@ export class InvitesController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  createInvite() {
-    return this.service.createInvite();
+  createInvite(@Request() request, @Body() data: CreateInviteDto) {
+    return this.service.createInvite(request.user, data);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get()
-  getInvite() {
-    return this.service.getInvite();
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+  })
+  getInvite(@Request() request, @Param('id') inviteId: Invite['id']) {
+    return this.service.getInvite(request.user, inviteId);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('accept')
-  acceptInvite() {
-    return this.service.acceptInvite();
+  acceptInvite(@Request() request, @Body('inviteId') inviteId: Invite['id']) {
+    return this.service.acceptInvite(request.user, inviteId);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('decline')
-  declineInvite() {
-    return this.service.declineInvite();
+  declineInvite(@Request() request, @Body('inviteId') inviteId: Invite['id']) {
+    return this.service.declineInvite(request.user, inviteId);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('cancel')
-  cancelInvite() {
-    return this.service.cancelInvite();
+  cancelInvite(@Request() request, @Body('inviteId') inviteId: Invite['id']) {
+    return this.service.cancelInvite(request.user, inviteId);
   }
 }

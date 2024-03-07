@@ -13,10 +13,6 @@ export class CreateInviteDto {
   invitee: User;
 
   @IsNotEmpty()
-  @Type(() => User)
-  sender: User;
-
-  @IsNotEmpty()
   @IsDate()
   expireAfter: Date;
 }

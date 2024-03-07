@@ -57,6 +57,20 @@ export class InviteRepository {
     return InviteMapper.toDomain(updatedEntity);
   }
 
+  async expireInvite(id: Invite['id']): Promise<Invite> {
+    const entity = await this.inviteRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!entity) {
+      throw new Error('Invite not found');
+    }
+    entity.status = 'expired';
+    const updatedEntity = await this.inviteRepository.save(entity);
+    return InviteMapper.toDomain(updatedEntity);
+  }
+
   async cancelInvite(id: Invite['id']): Promise<Invite> {
     const entity = await this.inviteRepository.findOne({
       where: {
