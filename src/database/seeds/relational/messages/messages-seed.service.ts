@@ -26,14 +26,24 @@ export class MessagesSeedService {
 
     const count = await this.messageRepository.count();
 
-    if (!count && user && workspace && channel) {
+    if (count < 3 && user && workspace && channel) {
       await this.messageRepository.save([
         this.messageRepository.create({
           content: 'Hello World',
           sender: user,
           workspace: workspace,
           channel: channel,
-          createdAt: new Date(),
+        }),
+      ]);
+
+      const [message] = await this.messageRepository.find({ take: 1 });
+      await this.messageRepository.save([
+        this.messageRepository.create({
+          content: 'In thread',
+          sender: user,
+          workspace: workspace,
+          channel: channel,
+          parentMessage: message,
         }),
       ]);
     }

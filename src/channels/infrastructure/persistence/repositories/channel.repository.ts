@@ -31,6 +31,27 @@ export class ChannelRelationalRepository {
     return entity ? ChannelMapper.toDomain(entity) : null;
   }
 
+  async update(id: Channel['id'], payload: Partial<Channel>): Promise<Channel> {
+    const entity = await this.channelRepository.findOne({
+      where: { id: Number(id) },
+    });
+
+    if (!entity) {
+      throw new Error('Channel not found');
+    }
+
+    const updatedChannel = await this.channelRepository.save(
+      this.channelRepository.create(
+        ChannelMapper.toPersistence({
+          ...ChannelMapper.toDomain(entity),
+          ...payload,
+        }),
+      ),
+    );
+
+    return ChannelMapper.toDomain(updatedChannel);
+  }
+
   async softDelete(id: Channel['id']): Promise<void> {
     await this.channelRepository.softDelete(id);
   }

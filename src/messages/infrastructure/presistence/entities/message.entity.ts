@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Message } from '../../../domain/messages';
+import { Message } from '../../../domain/message';
 import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
 import { WorkspaceEntity } from 'src/workspaces/infrastructure/persistence/entities/workspace.entity';
 import { ChannelEntity } from 'src/channels/infrastructure/persistence/entities/channel.entity';
@@ -28,7 +28,7 @@ export class MessageEntity extends EntityRelationalHelper implements Message {
   })
   sender: UserEntity;
 
-  @ManyToOne(() => ChannelEntity)
+  @ManyToOne(() => ChannelEntity, (channel) => channel.messages)
   channel: ChannelEntity;
 
   @CreateDateColumn()

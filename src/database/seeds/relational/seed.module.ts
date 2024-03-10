@@ -10,9 +10,7 @@ import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { WorkspaceSeedModule } from './workspace/workspace-seed.module';
 import { MessagesSeedModule } from './messages/messages-seed.module';
-
 import { ChannelSeedModule } from './channel/channel-seed.module';
-
 import { ChannelTypeSeedModule } from './channel-type/channel-type-seed.module';
 
 @Module({

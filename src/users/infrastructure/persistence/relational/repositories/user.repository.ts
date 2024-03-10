@@ -40,7 +40,13 @@ export class UsersRelationalRepository implements UserRepository {
         id: role.id,
       }));
     }
+    if (filterOptions?.workspaceId) {
+      where.workspaces = [{ id: filterOptions.workspaceId as number }];
+    }
 
+    if (filterOptions?.channelId) {
+      where.channels = [{ id: filterOptions.channelId as number }];
+    }
     const entities = await this.usersRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,

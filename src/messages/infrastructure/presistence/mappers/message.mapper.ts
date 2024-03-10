@@ -1,4 +1,4 @@
-import { Message } from 'src/messages/domain/messages';
+import { Message } from 'src/messages/domain/message';
 import { MessageEntity } from '../entities/message.entity';
 import { UserMapper } from 'src/users/infrastructure/persistence/relational/mappers/user.mapper';
 import { ChannelMapper } from 'src/channels/infrastructure/persistence/mappers/channel.mapper';

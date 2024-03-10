@@ -7,6 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +15,7 @@ import { Channel } from '../../../domain/channel';
 import { ChannelTypeEntity } from '../../../../channel-types/infrastructure/persistence/relational/entities/channel-type.entity';
 import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { WorkspaceEntity } from '../../../../workspaces/infrastructure/persistence/entities/workspace.entity';
+import { MessageEntity } from '../../../../messages/infrastructure/presistence/entities/message.entity';
 @Entity({
   name: 'channel',
 })
@@ -41,6 +43,9 @@ export class ChannelEntity extends EntityRelationalHelper implements Channel {
   @JoinTable()
   members: UserEntity[];
 
+  @OneToMany(() => MessageEntity, (message) => message.channel)
+  messages: MessageEntity[];
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -50,6 +55,8 @@ export class ChannelEntity extends EntityRelationalHelper implements Channel {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => WorkspaceEntity, (workspace) => workspace.channels)
+  @ManyToOne(() => WorkspaceEntity, (workspace) => workspace.channels, {
+    eager: true,
+  })
   workspace: WorkspaceEntity;
 }

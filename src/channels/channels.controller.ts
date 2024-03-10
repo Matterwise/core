@@ -9,12 +9,19 @@ import {
   Param,
   Get,
   Delete,
+  Patch,
+  Query,
 } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Channel } from './domain/channel';
+import { UpdateChannelDto } from './dto/update-channel.dto';
+import { ICursorPaginationOptions } from 'src/utils/types/pagination-options';
+import { MessagesService } from 'src/messages/messages.service';
+import { QueryUserDto } from '../users/dto/query-user.dto';
+import { infinityPagination } from '../utils/infinity-pagination';
 
 @ApiTags('Channels')
 @Controller({
@@ -22,7 +29,10 @@ import { Channel } from './domain/channel';
   version: '1',
 })
 export class ChannelsController {
-  constructor(private readonly channelsService: ChannelsService) {}
+  constructor(
+    private readonly channelsService: ChannelsService,
+    private readonly messageService: MessagesService,
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
@@ -44,6 +54,84 @@ export class ChannelsController {
   @HttpCode(HttpStatus.OK)
   getChannelById(@Request() request, @Param('id') id: Channel['id']) {
     return this.channelsService.getChannelById(request.user, id);
+  }
+
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  update(
+    @Param('id') id: Channel['id'],
+    @Body() updateChannelDto: UpdateChannelDto,
+    @Request() request,
+  ): Promise<Channel | null> {
+    return this.channelsService.update(request.user, id, updateChannelDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id/messages')
+  @ApiParam({
+    name: 'id',
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    example: 20,
+  })
+  @HttpCode(HttpStatus.OK)
+  getChannelMessages(
+    @Param('id') id: Channel['id'],
+    @Request() request,
+    @Query() query: ICursorPaginationOptions,
+  ) {
+    query.cursor = query.cursor ?? new Date();
+    query.limit = query.limit ?? 20;
+    if (query.limit > 100) {
+      query.limit = 100;
+    }
+    return this.messageService.getMessagesWithCursorPagination(id, query);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id/users')
+  @ApiParam({
+    name: 'id',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getChannelUsers(
+    @Param('id') channelId: Channel['id'],
+    @Query() query: QueryUserDto,
+  ) {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    return infinityPagination(
+      await this.channelsService.getChannelUsers({
+        filterOptions: {
+          channelId,
+          ...query?.filters,
+        },
+        sortOptions: query?.sort,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
   }
 
   @ApiBearerAuth()

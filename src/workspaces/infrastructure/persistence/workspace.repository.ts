@@ -19,11 +19,6 @@ export abstract class WorkspaceRepository {
     paginationOptions: IPaginationOptions,
   ): Promise<Workspace[]>;
 
-  abstract findUsersWithPagination(
-    workspaceId: Workspace['id'],
-    paginationOptions: IPaginationOptions,
-  ): Promise<User[]>;
-
   abstract findChannelsWithPagination(
     workspaceId: Workspace['id'],
     paginationOptions: IPaginationOptions,

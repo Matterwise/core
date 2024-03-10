@@ -19,6 +19,8 @@ import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { Workspace } from './domain/workspace';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
+import { QueryUserDto } from '../users/dto/query-user.dto';
+import { infinityPagination } from '../utils/infinity-pagination';
 
 @ApiTags('Workspaces')
 @Controller({
@@ -33,15 +35,19 @@ export class WorkspacesController {
   @Get()
   @ApiQuery({
     name: 'page',
+    required: false,
   })
   @ApiQuery({
     name: 'limit',
+    required: false,
   })
   @SerializeOptions({
     groups: ['me'],
   })
   @HttpCode(HttpStatus.OK)
   getWorkspaces(@Request() request, @Query() query: any) {
+    query.page = query.page ?? 1;
+    query.limit = query.limit ?? 10;
     return this.service.getWorkspaces(request.user, query);
   }
 
@@ -59,29 +65,34 @@ export class WorkspacesController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get(':id/users')
-  @ApiQuery({
-    name: 'page',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-  })
   @ApiParam({
     name: 'id',
   })
   @HttpCode(HttpStatus.OK)
-  getWorkspaceUsers(
+  async getWorkspaceUsers(
     @Param('id') workspaceId: Workspace['id'],
-    @Query() query: any,
+    @Query() query: QueryUserDto,
   ) {
-    query.page = query.page ?? 1;
-    query.limit = query.limit ?? 10;
-    if (query.limit > 50) {
-      query.limit = 50;
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
     }
 
-    return this.service.getWorkspaceUsers(workspaceId, query);
+    return infinityPagination(
+      await this.service.getWorkspaceUsers({
+        filterOptions: {
+          workspaceId,
+          ...query?.filters,
+        },
+        sortOptions: query?.sort,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
   }
 
   @ApiBearerAuth()
