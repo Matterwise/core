@@ -11,12 +11,15 @@ import { Workspace } from './domain/workspace';
 import { FilterUserDto, SortUserDto } from '../users/dto/query-user.dto';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UsersService } from '../users/users.service';
+import { Message } from '../messages/domain/message';
+import { MessagesService } from '../messages/messages.service';
 
 @Injectable()
 export class WorkspacesService {
   constructor(
     private readonly workspaceRepository: WorkspaceRepository,
     private readonly userService: UsersService,
+    private readonly messagesService: MessagesService,
   ) {}
 
   async getWorkspaces(
@@ -62,6 +65,31 @@ export class WorkspacesService {
     return this.workspaceRepository.findChannelsWithPagination(
       workspaceId,
       paginationOptions,
+    );
+  }
+
+  async findUserThreadsWithPagination(
+    workspaceId: Workspace['id'],
+    user: User,
+    query: IPaginationOptions,
+  ): Promise<Message[]> {
+    const entity = await this.userService.findOne({ id: user.id });
+    if (!entity) {
+      throw new NotFoundException();
+    }
+
+    const workspace = await this.workspaceRepository.findOne({
+      id: workspaceId,
+    });
+
+    if (!workspace) {
+      throw new NotFoundException();
+    }
+
+    return this.messagesService.findUserThreadsWithPagination(
+      workspaceId,
+      user.id,
+      query,
     );
   }
 

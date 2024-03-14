@@ -7,6 +7,7 @@ import { DatabaseConfig } from 'src/database/config/database-config.type';
 import { UsersService } from './users.service';
 import { DocumentUserPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
 import { RelationalUserPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { MessagesModule } from '../messages/messages.module';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
@@ -14,7 +15,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   : RelationalUserPersistenceModule;
 
 @Module({
-  imports: [infrastructurePersistenceModule, FilesModule],
+  imports: [infrastructurePersistenceModule, FilesModule, MessagesModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService, infrastructurePersistenceModule],

@@ -34,7 +34,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
 import { MessagesModule } from './messages/messages.module';
 import { ChannelsModule } from './channels/channels.module';
 import { InvitesModule } from './invites/invites.module';
-import { ThreadsModule } from './thread-participants/thread-participants.module';
+import { ThreadsModule } from './threads/threads.module';
 
 @Module({
   imports: [

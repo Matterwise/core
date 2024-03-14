@@ -4,6 +4,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -43,6 +45,20 @@ export class MessageEntity extends EntityRelationalHelper implements Message {
   @ManyToOne(() => WorkspaceEntity)
   workspace: WorkspaceEntity;
 
-  @ManyToOne(() => MessageEntity, { nullable: true })
+  @ManyToOne(() => MessageEntity)
   parentMessage: MessageEntity;
+
+  @ManyToMany(() => UserEntity, (user) => user.parentMessages)
+  @JoinTable({
+    name: 'thread_participants_user',
+    joinColumn: {
+      name: 'parentMessageId',
+      referencedColumnName: 'parentMessage',
+    },
+    inverseJoinColumn: {
+      name: 'participantId',
+      referencedColumnName: 'id',
+    },
+  })
+  participants: UserEntity[];
 }

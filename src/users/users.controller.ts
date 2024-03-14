@@ -26,9 +26,6 @@ import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
 import { UsersService } from './users.service';
 
-@ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Controller({
   path: 'users',
@@ -40,6 +37,9 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
@@ -49,6 +49,9 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
@@ -76,6 +79,9 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
@@ -90,6 +96,9 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
@@ -104,6 +113,9 @@ export class UsersController {
     return this.usersService.update(id, updateProfileDto);
   }
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @ApiParam({
     name: 'id',

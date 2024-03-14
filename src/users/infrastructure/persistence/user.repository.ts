@@ -16,6 +16,7 @@ export abstract class UserRepository {
       | 'channels'
       | 'workspaces'
       | 'invitesReceived'
+      | 'parentMessages'
     >,
   ): Promise<User>;
 

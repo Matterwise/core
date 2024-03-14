@@ -21,6 +21,9 @@ import { Workspace } from './domain/workspace';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { QueryUserDto } from '../users/dto/query-user.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
+import { IPaginationOptions } from '../utils/types/pagination-options';
+import { Message } from '../messages/domain/message';
+import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 
 @ApiTags('Workspaces')
 @Controller({
@@ -120,6 +123,39 @@ export class WorkspacesController {
       query.limit = 50;
     }
     return this.service.getWorkspaceChannels(workspaceId, query);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id/threads')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+  })
+  async findThreads(
+    @Param('id') id: Workspace['id'],
+    @Request() request,
+    @Query() query: IPaginationOptions,
+  ): Promise<InfinityPaginationResultType<Message>> {
+    query.page = query.page ?? 1;
+    query.limit = query.limit ?? 20;
+    if (query.limit > 50) {
+      query.limit = 50;
+    }
+    return infinityPagination(
+      await this.service.findUserThreadsWithPagination(id, request.user, query),
+      { page: query.page, limit: query.limit },
+    );
   }
 
   @ApiBearerAuth()

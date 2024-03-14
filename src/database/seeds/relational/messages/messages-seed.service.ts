@@ -36,10 +36,23 @@ export class MessagesSeedService {
         }),
       ]);
 
+      const [normalUser] = await this.userRepository.find({
+        skip: 1,
+        take: 1,
+      });
       const [message] = await this.messageRepository.find({ take: 1 });
       await this.messageRepository.save([
         this.messageRepository.create({
           content: 'In thread',
+          sender: normalUser,
+          workspace: workspace,
+          channel: channel,
+          parentMessage: message,
+        }),
+      ]);
+      await this.messageRepository.save([
+        this.messageRepository.create({
+          content: '2 In thread',
           sender: user,
           workspace: workspace,
           channel: channel,

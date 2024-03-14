@@ -4,14 +4,13 @@ import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 import { User } from '../../../../domain/user';
-import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 
 @Injectable()
-export class UsersDocumentRepository implements UserRepository {
+export class UsersDocumentRepository {
   constructor(
     @InjectModel(UserSchemaClass.name)
     private readonly usersModel: Model<UserSchemaClass>,

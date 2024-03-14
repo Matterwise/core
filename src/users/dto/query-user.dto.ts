@@ -10,6 +10,7 @@ import { User } from '../domain/user';
 import { RoleDto } from 'src/roles/dto/role.dto';
 import { Workspace } from '../../workspaces/domain/workspace';
 import { Channel } from '../../channels/domain/channel';
+import { Message } from 'src/messages/domain/message';
 
 export class FilterUserDto {
   @ApiProperty({ type: RoleDto })
@@ -29,6 +30,12 @@ export class FilterUserDto {
   @ValidateNested()
   @Type(() => Channel)
   channelId?: Channel['id'] | null;
+
+  @ApiProperty({ type: Message })
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => Message)
+  parentMessageId?: Message['id'] | null;
 }
 
 export class SortUserDto {

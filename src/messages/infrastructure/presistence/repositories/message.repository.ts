@@ -5,8 +5,13 @@ import { Repository } from 'typeorm';
 import { MessageMapper } from '../mappers/message.mapper';
 import { Message } from 'src/messages/domain/message';
 import { Channel } from 'src/channels/domain/channel';
-import { ICursorPaginationOptions } from 'src/utils/types/pagination-options';
+import {
+  ICursorPaginationOptions,
+  IPaginationOptions,
+} from 'src/utils/types/pagination-options';
 import convertDateToUTC from 'src/utils/convert-timezone';
+import { User } from '../../../../users/domain/user';
+import { Workspace } from '../../../../workspaces/domain/workspace';
 
 @Injectable()
 export class MessageRelationalRepository {
@@ -94,5 +99,83 @@ export class MessageRelationalRepository {
       messages: messages.map((message) => MessageMapper.toDomain(message)),
       nextCursor,
     };
+  }
+
+  async findUserThreadsWithPagination(
+    workspaceId: Workspace['id'],
+    userId: User['id'],
+    paginationOptions: IPaginationOptions,
+  ): Promise<Message[]> {
+    const threads = await this.messageRepository
+      .createQueryBuilder('message')
+      .leftJoinAndSelect(
+        'thread_participants_user',
+        'thread_participants_user',
+        'message.id = thread_participants_user.parentMessageId',
+      )
+      .leftJoinAndSelect(
+        'user',
+        'user',
+        'thread_participants_user.participantId = user.id',
+      )
+      .leftJoinAndSelect(
+        'message.channel',
+        'channel',
+        'channel.id = message.channelId',
+      )
+      .leftJoinAndSelect(
+        'message.sender',
+        'sender',
+        'sender.id = message.senderId',
+      )
+      .leftJoinAndSelect(
+        'message.workspace',
+        'workspace',
+        'workspace.id = message.workspaceId',
+      )
+      .select([
+        'message.id',
+        'message.content',
+        'message.createdAt',
+        'sender.id',
+        'sender.firstName',
+        'sender.lastName',
+        'sender.username',
+        'channel.id',
+        'channel.title',
+        'workspace.id',
+        'workspace.title',
+      ])
+      .where('user.id = :userId', { userId })
+      .andWhere('message.workspaceId = :workspaceId', { workspaceId })
+      .orderBy('message.createdAt', 'DESC')
+      .skip((paginationOptions.page - 1) * paginationOptions.limit)
+      .take(paginationOptions.limit)
+      .getMany();
+
+    if (!threads) {
+      throw new Error('Threads not found');
+    }
+
+    return threads.map((thread) => MessageMapper.toDomain(thread));
+  }
+
+  async unsubscribeThread(userId: User['id'], parentMessageId: Message['id']) {
+    await this.messageRepository
+      .createQueryBuilder()
+      .delete()
+      .from('thread_participants_user')
+      .where('participantId = :userId', { userId })
+      .andWhere('parentMessageId = :parentMessageId', { parentMessageId })
+      .execute();
+  }
+
+  async subscribeThread(userId: User['id'], parentMessageId: Message['id']) {
+    await this.messageRepository
+      .createQueryBuilder()
+      .insert()
+      .into('thread_participants_user')
+      .values({ participantId: userId, parentMessageId })
+      .execute();
   }
 }
