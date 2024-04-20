@@ -163,7 +163,7 @@ export class UsersService {
         email: clonedPayload.email,
       });
 
-      if (userObject) {
+      if (userObject && userObject.id !== id) {
         throw new HttpException(
           {
             status: HttpStatus.UNPROCESSABLE_ENTITY,
