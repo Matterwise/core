@@ -6,6 +6,7 @@ import { SubscribeDto } from './dto/subscribe.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
 import { MessageSentDto } from './dto/message-sent.dto';
 import { RoomType } from './enums/room-type.enum';
+import { MessageUpdatedDto } from './dto/message-updated.dto';
 
 @Injectable()
 export class EventsService {
@@ -56,6 +57,36 @@ export class EventsService {
     }
 
     client.to('channel' + message.channel.id).emit('message_sent', message);
+
+    return {
+      status: 'OK',
+      data: { message },
+      seq_reply: payload.seq,
+    };
+  }
+
+  async handleMessageUpdated(
+    client: any,
+    payload: MessageUpdatedDto,
+  ): Promise<EventReplyDto> {
+    const message = await this.messagesService.updateMessage(
+      client.user,
+      payload.id,
+      payload.data,
+    );
+
+    if (!message) {
+      return {
+        status: 'FAILED',
+        error: {
+          id: '500',
+          message: 'Internal Server Error',
+        },
+        seq_reply: payload.seq,
+      };
+    }
+
+    client.to('channel' + message.channel.id).emit('message_updated', message);
 
     return {
       status: 'OK',

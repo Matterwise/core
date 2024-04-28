@@ -65,6 +65,12 @@ export class MessageRelationalRepository implements MessageRepository {
       throw new Error('Message not found');
     }
 
+    await loadRelationships(
+      this.messageRepository,
+      ['channel', 'sender', 'workspace'],
+      [entity],
+    );
+
     const updatedMessage = await this.messageRepository.save(
       this.messageRepository.create(
         MessageMapper.toPersistence({

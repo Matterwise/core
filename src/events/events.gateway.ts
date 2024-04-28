@@ -21,6 +21,7 @@ import { EventReplyDto } from './dto/event-reply.dto';
 import { SubscribeDto } from './dto/subscribe.dto';
 import { WsCatchAllFilter } from './exceptions/ws-catch-all';
 import { EventsService } from './events.service';
+import { MessageUpdatedDto } from './dto/message-updated.dto';
 
 @WebSocketGateway({
   namespace: 'events',
@@ -58,5 +59,13 @@ export class EventsGateway {
     payload: MessageSentDto,
   ): Promise<EventReplyDto> {
     return this.eventsService.handleMessageSent(client, payload);
+  }
+
+  @SubscribeMessage('message_updated')
+  async handleMessageUpdated(
+    client: any,
+    payload: MessageUpdatedDto,
+  ): Promise<EventReplyDto> {
+    return this.eventsService.handleMessageUpdated(client, payload);
   }
 }
