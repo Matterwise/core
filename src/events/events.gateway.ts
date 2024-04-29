@@ -30,6 +30,7 @@ import { ChannelsEventService } from './channels.service';
 import { ChannelDeletedDto } from './dto/channel-deleted.dto';
 import { WorkspaceUpdatedDto } from './dto/workspace-updated.dto';
 import { WorkspacesEventService } from './workspaces.service';
+import { ChannelUpdatedDto } from './dto/channel-updated.dto';
 
 @WebSocketGateway({
   namespace: 'events',
@@ -110,6 +111,14 @@ export class EventsGateway {
     payload: ChannelCreatedDto,
   ): Promise<EventReplyDto> {
     return this.channelsService.channelCreated(client, payload);
+  }
+
+  @SubscribeMessage(Events.CHANNEL_UPDATED)
+  async channelUpdated(
+    client: any,
+    payload: ChannelUpdatedDto,
+  ): Promise<EventReplyDto> {
+    return this.channelsService.channelUpdated(client, payload);
   }
 
   @SubscribeMessage(Events.WORKSPACE_UPDATED)

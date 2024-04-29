@@ -4,6 +4,7 @@ import { ChannelDeletedDto } from './dto/channel-deleted.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
 import { Events } from './enums/events.enum';
 import { ChannelCreatedDto } from './dto/channel-created.dto';
+import { ChannelUpdatedDto } from './dto/channel-updated.dto';
 
 @Injectable()
 export class ChannelsEventService {
@@ -29,6 +30,36 @@ export class ChannelsEventService {
     }
 
     client.to('channel' + channel.id).emit(Events.CHANNEL_CREATED, channel);
+
+    return {
+      status: 'OK',
+      data: { channel },
+      seq_reply: payload.seq,
+    };
+  }
+
+  async channelUpdated(
+    client: any,
+    payload: ChannelUpdatedDto,
+  ): Promise<EventReplyDto> {
+    const channel = await this.channelsService.update(
+      client.user,
+      payload.id,
+      payload.data,
+    );
+
+    if (!channel) {
+      return {
+        status: 'FAILED',
+        error: {
+          id: '500',
+          message: 'Internal Server Error',
+        },
+        seq_reply: payload.seq,
+      };
+    }
+
+    client.to('channel' + payload.id).emit(Events.CHANNEL_UPDATED, channel);
 
     return {
       status: 'OK',
