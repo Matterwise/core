@@ -7,6 +7,7 @@ import { ChannelsModule } from 'src/channels/channels.module';
 import { MessagesEventService } from './messages.service';
 import { SubscriptionEventsService } from './subscriptions.service';
 import { ChannelsEventService } from './channels.service';
+import { WorkspacesEventService } from './workspaces.service';
 
 @Module({
   imports: [AuthModule, MessagesModule, WorkspacesModule, ChannelsModule],
@@ -16,6 +17,7 @@ import { ChannelsEventService } from './channels.service';
     SubscriptionEventsService,
     MessagesEventService,
     ChannelsEventService,
+    WorkspacesEventService,
   ],
 })
 export class EventsModule {}
