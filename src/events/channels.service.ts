@@ -99,6 +99,7 @@ export class ChannelsEventService {
     client
       .to(RoomType.Channel + payload.broadcast.channel_id)
       .emit(payload.event, {
+        typing: payload.typing,
         user_id: client.user.id,
         channel_id: payload.broadcast.channel_id,
       });

@@ -10,9 +10,6 @@ export class TypingBroadcastDto extends BroadcastDto {
 
 export class TypingEventDto extends EventDto {
   @IsNotEmpty()
-  user_id: string;
-
-  @IsNotEmpty()
   typing: boolean;
 
   @IsNotEmpty()
