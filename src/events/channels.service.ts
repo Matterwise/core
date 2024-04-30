@@ -5,6 +5,8 @@ import { EventReplyDto } from './dto/event-reply.dto';
 import { Events } from './enums/events.enum';
 import { ChannelCreatedDto } from './dto/channel-created.dto';
 import { ChannelUpdatedDto } from './dto/channel-updated.dto';
+import { RoomType } from './enums/room-type.enum';
+import { TypingEventDto } from './dto/typing.dto';
 
 @Injectable()
 export class ChannelsEventService {
@@ -91,5 +93,19 @@ export class ChannelsEventService {
         message: 'Channel successfully deleted',
       },
     };
+  }
+
+  async typing(client: any, payload: TypingEventDto): Promise<EventReplyDto> {
+    client
+      .to(RoomType.Channel + payload.broadcast.channel_id)
+      .emit(payload.event, {
+        user_id: client.user.id,
+        channel_id: payload.broadcast.channel_id,
+      });
+
+    return Promise.resolve({
+      status: 'OK',
+      seq_reply: payload.seq,
+    });
   }
 }
