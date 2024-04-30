@@ -15,6 +15,7 @@ export class WorkspaceUpdatedDto extends EventDto {
   data: UpdateWorkspaceDto;
 
   @IsNotEmpty()
+  @ValidateNested()
   @Type(() => BroadcastWorkspaceUpdatedDto)
   broadcast: BroadcastWorkspaceUpdatedDto;
 }
