@@ -12,7 +12,7 @@ export class WorkspacesEventService {
     payload: WorkspaceUpdatedDto,
   ): Promise<EventReplyDto> {
     const workspace = await this.workspacesService.updateWorkspace(
-      payload.id,
+      payload.broadcast.workspace_id,
       client.user,
       payload.data,
     );
@@ -29,7 +29,7 @@ export class WorkspacesEventService {
     }
 
     client
-      .to('workspace' + payload.id)
+      .to('workspace' + payload.broadcast.workspace_id)
       .emit(Events.WORKSPACE_UPDATED, workspace);
 
     return {

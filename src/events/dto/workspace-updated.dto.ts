@@ -1,13 +1,20 @@
 import { IsNotEmpty, ValidateNested } from 'class-validator';
-import { EventDto } from './event.dto';
+import { BroadcastDto, EventDto } from './event.dto';
 import { Workspace } from 'src/workspaces/domain/workspace';
 import { UpdateWorkspaceDto } from 'src/workspaces/dto/update-workspace.dto';
+import { Type } from 'class-transformer';
+
+class BroadcastWorkspaceUpdatedDto extends BroadcastDto {
+  @IsNotEmpty()
+  workspace_id: Workspace['id'];
+}
 
 export class WorkspaceUpdatedDto extends EventDto {
   @IsNotEmpty()
-  id: Workspace['id'];
-
-  @IsNotEmpty()
   @ValidateNested()
   data: UpdateWorkspaceDto;
+
+  @IsNotEmpty()
+  @Type(() => BroadcastWorkspaceUpdatedDto)
+  broadcast: BroadcastWorkspaceUpdatedDto;
 }
