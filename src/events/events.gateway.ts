@@ -117,4 +117,9 @@ export class EventsGateway {
   ): Promise<EventReplyDto> {
     return this.channelsService.channelUpdated(client, payload);
   }
+
+  @SubscribeMessage(Events.TYPING)
+  async typing(client: any, payload: any): Promise<EventReplyDto> {
+    return this.channelsService.typing(client, payload);
+  }
 }

@@ -7,4 +7,5 @@ export enum Events {
   CHANNEL_DELETED = 'channel_deleted',
   CHANNEL_CREATED = 'channel_created',
   CHANNEL_UPDATED = 'channel_updated',
+  TYPING = 'typing',
 }
