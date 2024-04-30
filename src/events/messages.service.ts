@@ -4,7 +4,6 @@ import { EventReplyDto } from './dto/event-reply.dto';
 import { MessageDeletedDto } from './dto/message-deleted.dto';
 import { MessageSentDto } from './dto/message-sent.dto';
 import { MessageUpdatedDto } from './dto/message-updated.dto';
-import { Events } from './enums/events.enum';
 import { RoomType } from './enums/room-type.enum';
 
 @Injectable()
@@ -32,7 +31,7 @@ export class MessagesEventService {
 
     client
       .to(RoomType.Channel + message.channel.id)
-      .emit(Events.MESSAGE_SENT, message);
+      .emit(payload.event, message);
 
     return {
       status: 'OK',
@@ -54,7 +53,7 @@ export class MessagesEventService {
 
     client
       .to(RoomType.Channel + payload.broadcast.channel_id)
-      .emit(Events.MESSAGE_DELETED, deletedMessage);
+      .emit(payload.event, deletedMessage);
 
     return {
       status: 'OK',
@@ -88,7 +87,7 @@ export class MessagesEventService {
 
     client
       .to(RoomType.Channel + message.channel.id)
-      .emit(Events.MESSAGE_UPDATED, message);
+      .emit(payload.event, message);
 
     return {
       status: 'OK',

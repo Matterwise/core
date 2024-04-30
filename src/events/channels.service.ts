@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelDeletedDto } from './dto/channel-deleted.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
-import { Events } from './enums/events.enum';
 import { ChannelCreatedDto } from './dto/channel-created.dto';
 import { ChannelUpdatedDto } from './dto/channel-updated.dto';
 import { RoomType } from './enums/room-type.enum';
@@ -31,9 +30,7 @@ export class ChannelsEventService {
       };
     }
 
-    client
-      .to(RoomType.Channel + channel.id)
-      .emit(Events.CHANNEL_CREATED, channel);
+    client.to(RoomType.Channel + channel.id).emit(payload.event, channel);
 
     return {
       status: 'OK',
@@ -63,9 +60,7 @@ export class ChannelsEventService {
       };
     }
 
-    client
-      .to(RoomType.Channel + payload.id)
-      .emit(Events.CHANNEL_UPDATED, channel);
+    client.to(RoomType.Channel + payload.id).emit(payload.event, channel);
 
     return {
       status: 'OK',
@@ -87,7 +82,7 @@ export class ChannelsEventService {
 
     client
       .to(RoomType.Channel + payload.id)
-      .emit(Events.CHANNEL_DELETED, channelDeleted);
+      .emit(payload.event, channelDeleted);
 
     return {
       status: 'OK',
