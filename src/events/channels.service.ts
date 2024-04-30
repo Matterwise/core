@@ -31,7 +31,9 @@ export class ChannelsEventService {
       };
     }
 
-    client.to('channel' + channel.id).emit(Events.CHANNEL_CREATED, channel);
+    client
+      .to(RoomType.Channel + channel.id)
+      .emit(Events.CHANNEL_CREATED, channel);
 
     return {
       status: 'OK',
@@ -61,7 +63,9 @@ export class ChannelsEventService {
       };
     }
 
-    client.to('channel' + payload.id).emit(Events.CHANNEL_UPDATED, channel);
+    client
+      .to(RoomType.Channel + payload.id)
+      .emit(Events.CHANNEL_UPDATED, channel);
 
     return {
       status: 'OK',
@@ -82,7 +86,7 @@ export class ChannelsEventService {
     };
 
     client
-      .to('channel' + payload.id)
+      .to(RoomType.Channel + payload.id)
       .emit(Events.CHANNEL_DELETED, channelDeleted);
 
     return {
