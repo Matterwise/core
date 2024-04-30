@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WorkspacesService } from 'src/workspaces/workspaces.service';
 import { WorkspaceUpdatedDto } from './dto/workspace-updated.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
+import { RoomType } from './enums/room-type.enum';
 
 @Injectable()
 export class WorkspacesEventService {
@@ -28,7 +29,7 @@ export class WorkspacesEventService {
     }
 
     client
-      .to('workspace' + payload.broadcast.workspace_id)
+      .to(RoomType.Workspace + payload.broadcast.workspace_id)
       .emit(payload.event, workspace);
 
     return {
