@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { WorkspacesService } from 'src/workspaces/workspaces.service';
 import { WorkspaceUpdatedDto } from './dto/workspace-updated.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
-import { Events } from './enums/events.enum';
 
 @Injectable()
 export class WorkspacesEventService {
@@ -30,7 +29,7 @@ export class WorkspacesEventService {
 
     client
       .to('workspace' + payload.broadcast.workspace_id)
-      .emit(Events.WORKSPACE_UPDATED, workspace);
+      .emit(payload.event, workspace);
 
     return {
       status: 'OK',
