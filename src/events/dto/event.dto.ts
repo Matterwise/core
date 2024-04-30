@@ -1,13 +1,9 @@
 import { Type } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
 import { Channel } from 'src/channels/domain/channel';
 import { User } from 'src/users/domain/user';
 import { Workspace } from 'src/workspaces/domain/workspace';
+import { Events } from '../enums/events.enum';
 
 export class BroadcastDto {
   omit_users: User['id'][];
@@ -25,8 +21,8 @@ export class EventDto {
   seq: number;
 
   @IsNotEmpty()
-  @IsString()
-  event: string;
+  @IsEnum(Events)
+  event: Events;
 
   @ValidateNested()
   @Type(() => BroadcastDto)
