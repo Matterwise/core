@@ -78,6 +78,8 @@ export class InviteRelationalRepository implements InviteRepository {
         'user.firstName',
         'user.lastName',
         'workspace.id',
+        'workspace.title',
+        'workspace.photo',
       ])
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
