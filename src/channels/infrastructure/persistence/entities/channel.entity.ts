@@ -35,7 +35,9 @@ export class ChannelEntity extends EntityRelationalHelper implements Channel {
   @Column({ type: String, nullable: true })
   description: string | null;
 
-  @ManyToOne(() => ChannelTypeEntity)
+  @ManyToOne(() => ChannelTypeEntity, {
+    eager: true,
+  })
   type?: ChannelTypeEntity;
 
   @ManyToMany(() => UserEntity, (user) => user.channels)

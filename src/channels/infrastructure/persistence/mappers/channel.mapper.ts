@@ -4,6 +4,7 @@ import { UserMapper } from 'src/users/infrastructure/persistence/relational/mapp
 import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
 import { WorkspaceEntity } from 'src/workspaces/infrastructure/persistence/entities/workspace.entity';
 import { WorkspaceMapper } from 'src/workspaces/infrastructure/persistence/mappers/workspace.mapper';
+import { ChannelTypeEntity } from 'src/channel-types/infrastructure/persistence/relational/entities/channel-type.entity';
 
 export class ChannelMapper {
   static toDomain(raw: ChannelEntity): Channel {
@@ -44,11 +45,17 @@ export class ChannelMapper {
     if (channel.id && typeof channel.id === 'number') {
       channelEntity.id = channel.id;
     }
+
+    const type = new ChannelTypeEntity();
+    if (channel.type) {
+      type.id = channel.type.id;
+    }
     channelEntity.title = channel.title;
     channelEntity.description = channel.description;
     channelEntity.owner = owner;
     channelEntity.workspace = workspace;
     channelEntity.members = members;
+    channelEntity.type = type;
     channelEntity.createdAt = channel.createdAt;
     channelEntity.updatedAt = channel.updatedAt;
     channelEntity.deletedAt = channel.deletedAt;
