@@ -14,6 +14,8 @@ import { Message } from '../../../domain/message';
 import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
 import { WorkspaceEntity } from 'src/workspaces/infrastructure/persistence/entities/workspace.entity';
 import { ChannelEntity } from 'src/channels/infrastructure/persistence/entities/channel.entity';
+import { FileType } from 'src/files/domain/file';
+import { FileEntity } from 'src/files/infrastructure/persistence/relational/entities/file.entity';
 
 @Entity({
   name: 'message',
@@ -65,4 +67,8 @@ export class MessageEntity extends EntityRelationalHelper implements Message {
     },
   })
   participants: UserEntity[];
+
+  @ManyToMany(() => FileEntity, (file) => file.messages)
+  @JoinTable()
+  files: FileType[];
 }

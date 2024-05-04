@@ -1,4 +1,5 @@
 import { Channel } from 'src/channels/domain/channel';
+import { FileType } from 'src/files/domain/file';
 import { User } from 'src/users/domain/user';
 import { DeepPartial } from 'src/utils/types/deep-partial.type';
 import { Workspace } from 'src/workspaces/domain/workspace';
@@ -16,4 +17,5 @@ export class Message {
   parentMessage?: Message;
   participants: User[];
   draft: boolean;
+  files: FileType[];
 }
