@@ -17,5 +17,5 @@ export class Message {
   parentMessage?: Message;
   participants: User[];
   draft: boolean;
-  files: FileType[];
+  files?: FileType[];
 }

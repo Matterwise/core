@@ -45,7 +45,7 @@ export class MessageRelationalRepository implements MessageRepository {
 
     await loadRelationships(
       this.messageRepository,
-      ['channel', 'sender', 'workspace'],
+      ['channel', 'sender', 'workspace', 'files'],
       [entity],
     );
 

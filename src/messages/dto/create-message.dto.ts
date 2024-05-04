@@ -10,6 +10,7 @@ import {
 import { Channel } from 'src/channels/domain/channel';
 import { Workspace } from 'src/workspaces/domain/workspace';
 import { Message } from '../domain/message';
+import { FileType } from 'src/files/domain/file';
 
 export class CreateMessageDto {
   @ApiProperty({ example: 'New message' })
@@ -44,4 +45,12 @@ export class CreateMessageDto {
   @IsNotEmpty()
   @IsBoolean()
   draft: boolean = false;
+
+  @ApiProperty({
+    type: [FileType],
+  })
+  @IsOptional()
+  @Type(() => FileType)
+  @ValidateNested({ each: true })
+  files?: FileType[];
 }

@@ -23,6 +23,7 @@ export class MessageMapper {
       id: raw.channel.id,
     };
     message.workspace = raw.workspace;
+    message.files = raw.files;
 
     return message;
   }
@@ -53,6 +54,10 @@ export class MessageMapper {
       const parentMessageEntity = new MessageEntity();
       parentMessageEntity.id = message.parentMessage.id as number;
       messageEntity.parentMessage = parentMessageEntity;
+    }
+
+    if (message.files) {
+      messageEntity.files = message.files;
     }
 
     return messageEntity;
