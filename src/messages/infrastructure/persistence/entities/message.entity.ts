@@ -29,7 +29,7 @@ export class MessageEntity extends EntityRelationalHelper implements Message {
   id: number;
 
   @Column({ type: String, nullable: true })
-  content: string;
+  content?: string;
 
   @Column({ default: 0 })
   childsCount: number;
