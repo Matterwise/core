@@ -175,7 +175,7 @@ export class WorkspacesController {
   @ApiParam({
     name: 'inviteId',
   })
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.NO_CONTENT)
   joinWorkspaceInvite(
     @Param('id') id: Workspace['id'],
     @Param('inviteId') inviteId: Invite['id'],

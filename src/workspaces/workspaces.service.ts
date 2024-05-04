@@ -161,22 +161,22 @@ export class WorkspacesService {
       id: workspaceId,
     });
     if (!workspace) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     const userEntity = await this.usersService.findOne({ id: user.id });
     if (!userEntity) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     const invite = await this.invitesService.findOne({ id: inviteId });
     if (!invite) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     if (
       invite.invitee_email != userEntity.email ||
       invite.workspace.id != workspaceId
     ) {
-      return new ForbiddenException();
+      throw new ForbiddenException();
     }
 
     await this.invitesService.acceptInvite(inviteId);
