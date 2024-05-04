@@ -6,7 +6,7 @@ import { Workspace } from 'src/workspaces/domain/workspace';
 
 export class Message {
   id: number | string;
-  content: string;
+  content?: string;
   childsCount: number;
   sender: DeepPartial<User>;
   channel: DeepPartial<Channel>;

@@ -31,7 +31,9 @@ export class MessageMapper {
   static toPersistence(message: Message): MessageEntity {
     const messageEntity = new MessageEntity();
     messageEntity.id = message.id as number;
-    messageEntity.content = message.content;
+    if (message.content) {
+      messageEntity.content = message.content;
+    }
     messageEntity.childsCount = message.childsCount;
     messageEntity.draft = message.draft;
     messageEntity.createdAt = message.createdAt;
