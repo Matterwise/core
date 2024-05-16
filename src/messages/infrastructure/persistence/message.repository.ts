@@ -33,7 +33,7 @@ export abstract class MessageRepository {
     fields: EntityCondition<Message>,
   ): Promise<NullableType<Message>>;
 
-  abstract softDelete(id: Message['id']): Promise<void>;
+  abstract softRemove(message: Message): Promise<any>;
 
   abstract update(
     id: Message['id'],

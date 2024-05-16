@@ -99,7 +99,7 @@ export class MessagesService {
     return this.messageRepository.update(id, payload);
   }
 
-  async softDelete(user: User, id: Message['id']): Promise<void> {
+  async softDelete(user: User, id: Message['id']): Promise<any> {
     const message = await this.messageRepository.findOne({ id });
 
     if (!message) {
@@ -110,6 +110,6 @@ export class MessagesService {
       throw new ForbiddenException();
     }
 
-    await this.messageRepository.softDelete(id);
+    return await this.messageRepository.softRemove(message);
   }
 }

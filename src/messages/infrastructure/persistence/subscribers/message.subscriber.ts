@@ -54,7 +54,7 @@ export class MessageSubscriber
           .createQueryBuilder()
           .update(MessageEntity)
           .set({
-            childsCount: () => '"childsCount" - 1',
+            childsCount: () => 'childsCount - 1',
           })
           .where('id = :id', { id: event.entity.parentMessage.id })
           .execute();

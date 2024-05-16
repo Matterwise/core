@@ -57,8 +57,8 @@ export class MessageRelationalRepository implements MessageRepository {
     return entity ? MessageMapper.toDomain(entity) : null;
   }
 
-  async softDelete(id: Message['id']): Promise<void> {
-    await this.messageRepository.softDelete(id);
+  async softRemove(message: MessageEntity): Promise<any> {
+    return await this.messageRepository.softRemove(message);
   }
 
   async update(id: Message['id'], payload: Partial<Message>): Promise<Message> {
