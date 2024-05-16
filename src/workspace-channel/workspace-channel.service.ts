@@ -30,10 +30,10 @@ export class WorkspaceChannelService {
   ) {
     const channel = await this.channelsService.getChannelById(user, channelId);
     if (!channel) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     if (channel.owner.id !== user.id) {
-      return new ForbiddenException();
+      throw new ForbiddenException();
     }
 
     const usersToAdd = await this.getWorkspaceMembers(data.users, workspaceId);

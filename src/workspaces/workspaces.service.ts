@@ -43,7 +43,7 @@ export class WorkspacesService {
   async getWorkspace(id: Workspace['id']) {
     const workspace = await this.workspaceRepository.findOne({ id });
     if (!workspace) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     return workspace;
   }

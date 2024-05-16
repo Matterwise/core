@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelDeletedDto } from './dto/channel-deleted.dto';
 import { EventReplyDto } from './dto/event-reply.dto';
@@ -113,28 +109,6 @@ export class ChannelsEventService {
       payload.broadcast.channel_id,
       payload.data,
     );
-
-    if (result instanceof NotFoundException) {
-      return {
-        status: 'FAILED',
-        error: {
-          id: '404',
-          message: 'Not Found',
-        },
-        seq_reply: payload.seq,
-      };
-    }
-
-    if (result instanceof ForbiddenException) {
-      return {
-        status: 'FAILED',
-        error: {
-          id: '403',
-          message: 'Forbidden',
-        },
-        seq_reply: payload.seq,
-      };
-    }
 
     if (!result) {
       return {
