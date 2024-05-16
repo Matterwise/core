@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql
+    image: mysql:8.3
     volumes:
       - db:/var/lib/mysql
     ports:

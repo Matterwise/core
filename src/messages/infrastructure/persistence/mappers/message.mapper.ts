@@ -17,6 +17,7 @@ export class MessageMapper {
     message.sender = {
       id: raw.sender.id,
       firstName: raw.sender.firstName,
+      lastName: raw.sender.lastName,
       photo: raw.sender.photo,
     };
     message.channel = {
@@ -24,6 +25,11 @@ export class MessageMapper {
     };
     message.workspace = raw.workspace;
     message.files = raw.files;
+    if (raw.parentMessage) {
+      message.parentMessage = {
+        id: raw.parentMessage.id,
+      };
+    }
 
     return message;
   }
@@ -54,7 +60,7 @@ export class MessageMapper {
 
     if (message.parentMessage) {
       const parentMessageEntity = new MessageEntity();
-      parentMessageEntity.id = message.parentMessage.id as number;
+      parentMessageEntity.id = Number(message.parentMessage.id);
       messageEntity.parentMessage = parentMessageEntity;
     }
 

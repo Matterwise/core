@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { WorkspaceRepository } from './infrastructure/persistence/workspace.repository';
@@ -156,32 +157,37 @@ export class WorkspacesService {
     workspaceId: Workspace['id'],
     inviteId,
     user: User,
-  ) {
+  ): Promise<void> {
     const workspace = await this.workspaceRepository.findOne({
       id: workspaceId,
     });
     if (!workspace) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     const userEntity = await this.usersService.findOne({ id: user.id });
     if (!userEntity) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
     const invite = await this.invitesService.findOne({ id: inviteId });
     if (!invite) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     if (
       invite.invitee_email != userEntity.email ||
       invite.workspace.id != workspaceId
     ) {
-      return new ForbiddenException();
+      throw new ForbiddenException();
     }
 
     await this.invitesService.acceptInvite(inviteId);
 
-    return this.workspaceRepository.addUserToWorkspace(workspaceId, user.id);
+    try {
+      await this.workspaceRepository.addUserToWorkspace(workspaceId, user.id);
+    } catch (error) {
+      Logger.error(error);
+      throw new NotFoundException();
+    }
   }
 
   async updateWorkspace(

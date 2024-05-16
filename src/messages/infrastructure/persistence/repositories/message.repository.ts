@@ -33,6 +33,11 @@ export class MessageRelationalRepository implements MessageRepository {
     const newEntity = await this.messageRepository.save(
       this.messageRepository.create(presistenceModel),
     );
+    await loadRelationships(
+      this.messageRepository,
+      ['sender', 'parentMessage'],
+      [newEntity],
+    );
     return MessageMapper.toDomain(newEntity);
   }
 
@@ -45,7 +50,7 @@ export class MessageRelationalRepository implements MessageRepository {
 
     await loadRelationships(
       this.messageRepository,
-      ['channel', 'sender', 'workspace', 'files'],
+      ['channel', 'sender', 'workspace', 'files', 'parentMessage'],
       [entity],
     );
 
@@ -125,6 +130,7 @@ export class MessageRelationalRepository implements MessageRepository {
         'sender',
         'sender.id = message.senderId',
       )
+      .leftJoinAndSelect('sender.photo', 'photo', 'photo.id = sender.photoId')
       .leftJoinAndSelect(
         'message.channel',
         'channel',
@@ -144,10 +150,14 @@ export class MessageRelationalRepository implements MessageRepository {
         'message.id',
         'message.content',
         'message.createdAt',
+        'message.childsCount',
         'sender.id',
         'sender.firstName',
         'sender.lastName',
         'sender.username',
+        'sender.photo',
+        'photo.id',
+        'photo.path',
         'channel.id',
         'channel.title',
         'workspace.id',
