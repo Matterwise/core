@@ -21,17 +21,22 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { QueryUserDto } from '../users/dto/query-user.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { QueryMessageDto } from 'src/messages/dto/query-message.dto';
+import { CheckPolicies } from 'src/authz/check-policies/check-policies.decorator';
+import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Action } from 'src/casl/action.enum';
+import { PoliciesGuard } from 'src/authz/policies.guard/policies.guard';
 
 @ApiTags('Channels')
 @Controller({
   path: 'channels',
   version: '1',
 })
+@UseGuards(AuthGuard('jwt'), PoliciesGuard)
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, Channel))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createChannel(
@@ -42,7 +47,6 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   @ApiParam({
     name: 'id',
@@ -53,7 +57,6 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @ApiParam({
     name: 'id',
@@ -68,7 +71,6 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id/messages')
   @ApiParam({
     name: 'id',
@@ -94,7 +96,6 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id/users')
   @ApiParam({
     name: 'id',
@@ -127,13 +128,13 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, Channel))
   @Delete(':id')
   @ApiParam({
     name: 'id',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: Channel['id'], @Request() request): Promise<void> {
-    return this.channelsService.softDelete(request.user, id);
+    return this.channelsService.softDelete(request, id);
   }
 }

@@ -21,6 +21,8 @@ import {
   SortMessageDto,
 } from 'src/messages/dto/query-message.dto';
 import { FilterChannelDto, SortChannelDto } from './dto/query-channel.dto';
+import { CaslAbilityFactory } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Action } from 'src/casl/action.enum';
 
 @Injectable()
 export class ChannelsService {
@@ -28,6 +30,7 @@ export class ChannelsService {
     private readonly channelRepostory: ChannelRepository,
     private readonly usersService: UsersService,
     private readonly messagesService: MessagesService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   async createChannel(user: User, createChannelDto: CreateChannelDto) {
@@ -140,7 +143,8 @@ export class ChannelsService {
       throw new NotFoundException();
     }
 
-    if (channel.owner.id !== user.id) {
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.cannot(Action.Delete, channel)) {
       throw new ForbiddenException();
     }
 
