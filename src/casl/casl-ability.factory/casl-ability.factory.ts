@@ -25,7 +25,7 @@ type Conditions = MongoQuery;
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder(
+    const { can, build } = new AbilityBuilder(
       createMongoAbility<PossibleAbilities, Conditions>,
     );
 
