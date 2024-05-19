@@ -30,12 +30,12 @@ export class CaslAbilityFactory {
     );
 
     if (user.role?.id === RoleEnum.admin) {
-      can(Action.Manage, 'all');
+      can(Action.MANAGE, 'all');
     } else {
-      can(Action.Read, Channel);
-      can(Action.Create, Channel);
-      can(Action.Update, Channel, { owner: user });
-      can(Action.Delete, Channel, { owner: user });
+      can(Action.READ, Channel);
+      can(Action.CREATE, Channel);
+      can(Action.UPDATE, Channel, { owner: user });
+      can(Action.DELETE, Channel, { owner: user });
     }
 
     return build({
