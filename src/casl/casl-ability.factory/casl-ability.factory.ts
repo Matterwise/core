@@ -18,9 +18,9 @@ type Subjects =
   | InferSubjects<typeof Workspace | typeof Channel | typeof Message>
   | 'all';
 
-export type AppAbility = MongoAbility<PossibleAbilities, Conditions>;
 type PossibleAbilities = [Action, Subjects];
 type Conditions = MongoQuery;
+export type AppAbility = MongoAbility<PossibleAbilities, Conditions>;
 
 @Injectable()
 export class CaslAbilityFactory {
@@ -34,8 +34,8 @@ export class CaslAbilityFactory {
     } else {
       can(Action.READ, Channel);
       can(Action.CREATE, Channel);
-      can(Action.UPDATE, Channel, { owner: user });
-      can(Action.DELETE, Channel, { owner: user });
+      can(Action.UPDATE, Channel);
+      can(Action.DELETE, Channel);
     }
 
     return build({
