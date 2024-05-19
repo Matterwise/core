@@ -74,7 +74,8 @@ export class ChannelsService {
       throw new NotFoundException();
     }
 
-    if (channel.owner.id !== user.id) {
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.cannot(Action.UPDATE, channel)) {
       throw new ForbiddenException();
     }
 
@@ -144,7 +145,7 @@ export class ChannelsService {
     }
 
     const ability = this.caslAbilityFactory.createForUser(user);
-    if (ability.cannot(Action.Delete, channel)) {
+    if (ability.cannot(Action.DELETE, channel)) {
       throw new ForbiddenException();
     }
 

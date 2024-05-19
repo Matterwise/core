@@ -36,7 +36,7 @@ export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @ApiBearerAuth()
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, Channel))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.CREATE, Channel))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createChannel(
@@ -57,6 +57,7 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.UPDATE, Channel))
   @Patch(':id')
   @ApiParam({
     name: 'id',
@@ -128,7 +129,7 @@ export class ChannelsController {
   }
 
   @ApiBearerAuth()
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, Channel))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.DELETE, Channel))
   @Delete(':id')
   @ApiParam({
     name: 'id',
