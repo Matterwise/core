@@ -140,10 +140,6 @@ export class ChannelsService {
       throw new NotFoundException();
     }
 
-    if (channel.owner.id !== user.id) {
-      throw new ForbiddenException();
-    }
-
     await this.channelRepostory.softDelete(id);
   }
 
