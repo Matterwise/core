@@ -136,6 +136,6 @@ export class ChannelsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: Channel['id'], @Request() request): Promise<void> {
-    return this.channelsService.softDelete(request, id);
+    return this.channelsService.softDelete(request.user, id);
   }
 }

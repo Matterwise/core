@@ -7,6 +7,7 @@ import {
   createMongoAbility,
 } from '@casl/ability';
 import { Channel } from 'src/channels/domain/channel';
+import { FlatChannel } from './typs';
 import { Message } from 'src/messages/domain/message';
 import { Workspace } from 'src/workspaces/domain/workspace';
 import { Action } from '../action.enum';
@@ -32,10 +33,12 @@ export class CaslAbilityFactory {
     if (user.role?.id === RoleEnum.admin) {
       can(Action.MANAGE, 'all');
     } else {
+      console.log(user);
+      console.log(Channel);
       can(Action.READ, Channel);
       can(Action.CREATE, Channel);
-      can(Action.UPDATE, Channel);
-      can(Action.DELETE, Channel);
+      can<FlatChannel>(Action.UPDATE, Channel, { 'owner.id': user.id });
+      can<FlatChannel>(Action.DELETE, Channel, { 'owner.id': user.id });
     }
 
     return build({
