@@ -45,8 +45,16 @@ export class AiService {
         paginationOptions,
       });
 
+    const parentMessage =
+      await this.messageService.getMessageById(parentMessageId);
+
+    messages.unshift(parentMessage);
+
     const formattedMessages = messages
-      .map((message) => `${message.sender.username}: ${message.content}`)
+      .map(
+        (message) =>
+          `${message.sender.firstName} ${message.sender.lastName}: ${message.content}`,
+      )
       .join('\n');
 
     return this.getPrediction(formattedMessages);
