@@ -11,10 +11,11 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { QueryUserDto } from 'src/users/dto/query-user.dto';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { ThreadsService } from './threads.service';
+import { AiService } from 'src/ai/ai.service';
 
 @ApiTags('Threads')
 @Controller({
@@ -22,7 +23,10 @@ import { ThreadsService } from './threads.service';
   version: '1',
 })
 export class ThreadsController {
-  constructor(private readonly service: ThreadsService) {}
+  constructor(
+    private readonly service: ThreadsService,
+    private readonly aiService: AiService,
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
@@ -75,5 +79,30 @@ export class ThreadsController {
   })
   async unsubscribeThread(@Param('id') id: string, @Request() request) {
     return this.service.unsubscribeThread(request.user.id, id);
+  }
+
+  @Post('summarize/:parentMessageId')
+  @ApiParam({
+    name: 'parentMessageId',
+    description: 'Parent message Id',
+  })
+  @ApiQuery({
+    name: 'channelId',
+    description: 'Channel Id',
+  })
+  async summarizeThread(
+    @Param('parentMessageId') parentMessageId: string,
+    @Query()
+    query: {
+      channelId: string;
+    },
+  ): Promise<any> {
+    console.log('parentMessageId', parentMessageId);
+    console.log('channelId', query.channelId);
+    const summary = await this.aiService.summarizeThread(
+      parentMessageId,
+      query.channelId,
+    );
+    return { summary };
   }
 }

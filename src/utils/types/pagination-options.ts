@@ -4,6 +4,6 @@ export interface IPaginationOptions {
 }
 
 export interface ICursorPaginationOptions {
-  cursor: number;
+  cursor?: number;
   limit: number;
 }
